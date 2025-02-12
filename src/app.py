@@ -11,7 +11,7 @@ class RequestData(BaseModel):
   num_employees: int
   num_weeks: Optional[int] = 3
   shifts: Optional[List[str]] = ["O", "M", "A", "N"]
-  fixed_assignments: Optional[List[int]] = []
+  fixed_assignments: Optional[List[Tuple[int, int, int]]] = []
   requests: Optional[List[Tuple[int, int, int, int]]] = []
   shift_constraints: Optional[List[Tuple[int, int, int, int, int, int, int]]] = None
   weekly_sum_constraints: Optional[List[Tuple[int, int, int, int, int, int, int]]] = None
