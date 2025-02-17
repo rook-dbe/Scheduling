@@ -273,6 +273,15 @@ def solve_shift_scheduling(params: dict):
     else:
       excess_cover_penalties = (2, 2, 5)
 
+    # special_cover_demands
+    if params['special_cover_demands'] is not None:
+      special_cover_demands = params['special_cover_demands']
+    else:
+      special_cover_demands = []
+    special_cover_demands_tbl = {}
+    for d,n1,n2,n3 in special_cover_demands:
+      special_cover_demands_tbl[(d//7, d%7)] = (n1,n2,n3)
+
     num_days = num_weeks * 7
     num_shifts = len(shifts)
 
@@ -368,7 +377,10 @@ def solve_shift_scheduling(params: dict):
             for d in range(7):
                 works = [work[e, s, w * 7 + d] for e in range(num_employees)]
                 # Ignore Off shift.
-                min_demand = weekly_cover_demands[d][s - 1]
+                if (w,d) not in special_cover_demands_tbl:
+                    min_demand = weekly_cover_demands[d][s - 1]
+                else:
+                    min_demand = special_cover_demands_tbl[(w,d)][s - 1]
                 worked = model.new_int_var(min_demand, num_employees, "")
                 model.add(worked == sum(works))
                 over_penalty = excess_cover_penalties[s - 1]
@@ -413,7 +425,8 @@ def solve_shift_scheduling(params: dict):
     inputs['weekly_sum_constraints'] = weekly_sum_constraints
     inputs['penalized_transitions'] = penalized_transitions
     inputs['weekly_cover_demands'] = weekly_cover_demands 
-    inputs['excess_cover_penalties'] = excess_cover_penalties 
+    inputs['excess_cover_penalties'] = excess_cover_penalties
+    inputs['special_cover_demands'] =  special_cover_demands
 
     # penalties
     penalties = ""
@@ -468,6 +481,7 @@ if __name__ == "__main__":
         (1, 3, 1),  # Sunday
     ]
     parms['excess_cover_penalties'] = None
+    parms['special_cover_demands'] = None
     ans = solve_shift_scheduling(parms)
     print(ans['status'])
     print(ans['result'])

@@ -18,6 +18,7 @@ class RequestData(BaseModel):
   penalized_transitions: Optional[List[Tuple[int, int, int]]] = None
   weekly_cover_demands: Optional[List[Tuple[int, int, int]]] = None
   excess_cover_penalties: Optional[Tuple[int, int, int]] = None
+  special_cover_demands: Optional[List[Tuple[int, int, int, int]]] = None
 
 class ResponseData(BaseModel):
   status: int
