@@ -19,6 +19,7 @@ class RequestData(BaseModel):
   weekly_cover_demands: Optional[List[Tuple[int, int, int]]] = None
   excess_cover_penalties: Optional[Tuple[int, int, int]] = None
   special_cover_demands: Optional[List[Tuple[int, int, int, int]]] = None
+  max_time_in_seconds: Optional[float] = 10.0
 
 class ResponseData(BaseModel):
   status: int

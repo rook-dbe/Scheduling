@@ -282,6 +282,12 @@ def solve_shift_scheduling(params: dict):
     for d,n1,n2,n3 in special_cover_demands:
       special_cover_demands_tbl[(d//7, d%7)] = (n1,n2,n3)
 
+    # max_time_in_seconds
+    if params['max_time_in_seconds'] is not None:
+      max_time_in_seconds = params['max_time_in_seconds']
+    else:
+      max_time_in_seconds = 10.0
+
     num_days = num_weeks * 7
     num_shifts = len(shifts)
 
@@ -399,7 +405,7 @@ def solve_shift_scheduling(params: dict):
 
     # Solve the model.
     solver = cp_model.CpSolver()
-    solver.parameters.max_time_in_seconds = 10.0
+    solver.parameters.max_time_in_seconds = max_time_in_seconds
 
     #solution_printer = cp_model.ObjectiveSolutionPrinter()
     #status = solver.solve(model, solution_printer)
@@ -426,7 +432,8 @@ def solve_shift_scheduling(params: dict):
     inputs['penalized_transitions'] = penalized_transitions
     inputs['weekly_cover_demands'] = weekly_cover_demands 
     inputs['excess_cover_penalties'] = excess_cover_penalties
-    inputs['special_cover_demands'] =  special_cover_demands
+    inputs['special_cover_demands'] = special_cover_demands
+    inputs['max_time_in_seconds'] = max_time_in_seconds
 
     # penalties
     penalties = ""
@@ -482,6 +489,8 @@ if __name__ == "__main__":
     ]
     parms['excess_cover_penalties'] = None
     parms['special_cover_demands'] = None
+    parms['max_time_in_seconds'] = 10.0
+
     ans = solve_shift_scheduling(parms)
     print(ans['status'])
     print(ans['result'])
